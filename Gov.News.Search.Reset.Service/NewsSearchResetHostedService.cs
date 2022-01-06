@@ -27,7 +27,7 @@ namespace Gov.News.Search.Reset.Service
 
         public Task StartAsync(CancellationToken cancellationToken)
         {
-            _timer = new Timer(ResetSearchService, null, 0, 1000 * 60 * 180); // every 3 hours
+            _timer = new Timer(ResetSearchService, null, 0, 1000 * 60 * 360); // every 6 hours
             return Task.CompletedTask;
         }
 
