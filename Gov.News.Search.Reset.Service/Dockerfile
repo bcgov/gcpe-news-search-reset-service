@@ -1,4 +1,4 @@
-FROM registry.access.redhat.com/ubi8/dotnet-50-runtime:5.0-30.20220127181329
+FROM image-registry.openshift-image-registry.svc:5000/e704e1-tools/dotnet-50
 USER 1001
 RUN mkdir Gov.News.Search.Reset.Service
 WORKDIR Gov.News.Search.Reset.Service
