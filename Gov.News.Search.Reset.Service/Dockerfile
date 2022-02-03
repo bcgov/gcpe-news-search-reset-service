@@ -1,12 +1,22 @@
-FROM registry.access.redhat.com/ubi8/dotnet-50-runtime:5.0-30.20220127181329
-USER 1001
-RUN mkdir Gov.News.Search.Reset.Service
-WORKDIR Gov.News.Search.Reset.Service
-ADD . .
+#See https://aka.ms/containerfastmode to understand how Visual Studio uses this Dockerfile to build your images for faster debugging.
 
-RUN dotnet publish -c Release
-
+FROM mcr.microsoft.com/dotnet/aspnet:5.0 AS base
+WORKDIR /app
 EXPOSE 80
 EXPOSE 443
 
-CMD ["dotnet", "./bin/Release/net5.0/publish/Gov.News.Search.Reset.Service.dll"]
+FROM mcr.microsoft.com/dotnet/sdk:5.0 AS build
+WORKDIR /src
+COPY ["Gov.News.Search.Reset.Service.csproj", "."]
+RUN dotnet restore "./Gov.News.Search.Reset.Service.csproj"
+COPY . .
+WORKDIR "/src/."
+RUN dotnet build "Gov.News.Search.Reset.Service.csproj" -c Release -o /app/build
+
+FROM build AS publish
+RUN dotnet publish "Gov.News.Search.Reset.Service.csproj" -c Release -o /app/publish
+
+FROM base AS final
+WORKDIR /app
+COPY --from=publish /app/publish .
+ENTRYPOINT ["dotnet", "Gov.News.Search.Reset.Service.dll"]
